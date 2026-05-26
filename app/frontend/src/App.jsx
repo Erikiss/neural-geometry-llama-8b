@@ -77,9 +77,28 @@ export default function App() {
       <div className="max-w-5xl mx-auto px-4 py-10 flex flex-col gap-8">
 
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Neural Geometry Explorer</h1>
-          <p className="text-[#8b949e] text-sm">
-            Visualize how Llama 3.1 8B represents concepts internally as 3D geometric structures
+          <h1 className="text-2xl font-bold text-white mb-1">Exploring manifold structure in Llama</h1>
+          <p className="text-[#8b949e] text-sm leading-relaxed">
+            Visualize how Llama 3.1 8B represents ordered concepts as geometric structures in activation space.
+            Inspired by{' '}
+            <a
+              href="https://arxiv.org/abs/2605.05115"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#58a6ff] hover:underline"
+            >
+              Goodfire's manifold steering research
+            </a>
+            .{' '}
+            <a
+              href="https://github.com/Talib-Mirza/Neural-Geometry-Llama-8b"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#58a6ff] hover:underline"
+            >
+              View on GitHub
+            </a>
+            .
           </p>
         </div>
 

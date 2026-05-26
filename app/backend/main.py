@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import os
 
@@ -5,11 +7,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sse_starlette.sse import EventSourceResponse
 
-from cache import find_cached, get_recent, save_to_cache
+from cache import delete_cached, find_cached, get_recent, save_to_cache
 from extraction import extract_activations
 from models import QueryRequest, QueryResult
 from pipeline import run_pipeline
@@ -46,6 +48,12 @@ def health():
 @app.get("/api/recent")
 def recent():
     return get_recent(10)
+
+
+@app.delete("/api/cache")
+def clear_cache(q: str | None = Query(default=None, description="Delete only entries whose query contains this substring. Omit to delete all.")):
+    deleted = delete_cached(q)
+    return {"deleted": deleted, "filter": q}
 
 
 @app.post("/api/query")

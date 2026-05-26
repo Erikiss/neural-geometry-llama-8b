@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 import uuid
 from io import BytesIO
@@ -11,8 +12,8 @@ import numpy as np
 
 from models import ConceptSpec, PromptItem, QueryResult
 
-CACHE_DIR = Path(__file__).parent / "cache"
-CACHE_DIR.mkdir(exist_ok=True)
+CACHE_DIR = Path(os.environ.get("CACHE_DIR", Path(__file__).parent / "cache"))
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
 DB_PATH = CACHE_DIR / "cache.db"
 
 SIMILARITY_THRESHOLD = 0.88
@@ -91,6 +92,21 @@ def save_to_cache(
     )
     conn.commit()
     conn.close()
+
+
+def delete_cached(query_filter: str | None = None) -> int:
+    conn = _get_conn()
+    if query_filter:
+        cur = conn.execute(
+            "DELETE FROM cache WHERE LOWER(query) LIKE LOWER(?)",
+            (f"%{query_filter}%",),
+        )
+    else:
+        cur = conn.execute("DELETE FROM cache")
+    conn.commit()
+    deleted = cur.rowcount
+    conn.close()
+    return deleted
 
 
 def get_recent(limit: int = 10) -> list[dict]:

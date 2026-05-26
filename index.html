@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neural Geometry — Llama 3.1 8B</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: #8b949e;
+      margin-bottom: 36px;
+      line-height: 1.5;
+    }
+    .subtitle a { color: #58a6ff; text-decoration: none; }
+    h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      margin-top: 32px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 18px 20px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .card:hover { border-color: #58a6ff; background: #1c2128; }
+    .icon {
+      font-size: 1.8rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .card-body {}
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #e6edf3;
+      margin-bottom: 3px;
+    }
+    .card-desc {
+      font-size: 0.8rem;
+      color: #8b949e;
+      line-height: 1.4;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 1px 7px;
+      border-radius: 99px;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+    .tag-ring   { background: #1a3a5c; color: #58a6ff; }
+    .tag-arc    { background: #1a3a2c; color: #3fb950; }
+    .tag-valid  { background: #2d2a1a; color: #d29922; }
+    .divider {
+      border: none;
+      border-top: 1px solid #21262d;
+      margin: 8px 0 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Neural Geometry — Llama 3.1 8B</h1>
+  <p class="subtitle">
+    Replicating <a href="https://arxiv.org/abs/2605.05115" target="_blank">Manifold Steering</a>
+    (Goodfire 2025) · Layer 28 hidden states · Multi-step PCA + periodic/natural splines
+  </p>
+
+  <h2>Experiment 1 — Days of Week</h2>
+  <div class="grid">
+    <a class="card" href="experiment1/days_geometry_3d.html">
+      <div class="icon">📅</div>
+      <div class="card-body">
+        <div class="card-title">Days of Week — 3D Ring</div>
+        <div class="card-desc">7 day centroids via periodic cubic spline · 84 prompts</div>
+        <span class="tag tag-ring">Cyclic · ring</span>
+      </div>
+    </a>
+    <a class="card" href="experiment1/validate_centroids_2d.html">
+      <div class="icon">🔍</div>
+      <div class="card-body">
+        <div class="card-title">Days — Unbiased 2D</div>
+        <div class="card-desc">Centroid-only PCA · no spline · honest geometric view</div>
+        <span class="tag tag-valid">Validation</span>
+      </div>
+    </a>
+    <a class="card" href="experiment1/validate_centroids_3d_unbiased.html">
+      <div class="icon">🔍</div>
+      <div class="card-body">
+        <div class="card-title">Days — Unbiased 3D</div>
+        <div class="card-desc">Centroid-only 3D PCA · confirms ring without spline bias</div>
+        <span class="tag tag-valid">Validation</span>
+      </div>
+    </a>
+  </div>
+
+  <h2>Experiment 2 — Color, Temperature, Age</h2>
+  <div class="grid">
+    <a class="card" href="experiment2/color_geometry_3d.html">
+      <div class="icon">🌈</div>
+      <div class="card-body">
+        <div class="card-title">Color (ROYGBIV) — 3D Ring</div>
+        <div class="card-desc">7 colors · periodic spline · 7/7 adjacency ✓ · cyclic order ✓</div>
+        <span class="tag tag-ring">Cyclic · ring</span>
+      </div>
+    </a>
+    <a class="card" href="experiment2/color_geometry_2d_unbiased.html">
+      <div class="icon">🔍</div>
+      <div class="card-body">
+        <div class="card-title">Color — Unbiased 2D</div>
+        <div class="card-desc">Centroid-only 2D PCA · confirms hue-wheel order</div>
+        <span class="tag tag-valid">Validation</span>
+      </div>
+    </a>
+    <a class="card" href="experiment2/temp_geometry_3d.html">
+      <div class="icon">🌡️</div>
+      <div class="card-body">
+        <div class="card-title">Temperature (10–100°C) — 3D Arc</div>
+        <div class="card-desc">10 temps · natural spline · PC1/PC2 ratio 4.9 · linear ✓</div>
+        <span class="tag tag-arc">Linear · arc</span>
+      </div>
+    </a>
+    <a class="card" href="experiment2/temp_geometry_2d_unbiased.html">
+      <div class="icon">🔍</div>
+      <div class="card-body">
+        <div class="card-title">Temperature — Unbiased 2D</div>
+        <div class="card-desc">Centroid-only 2D PCA · near-monotone cold→hot axis</div>
+        <span class="tag tag-valid">Validation</span>
+      </div>
+    </a>
+    <a class="card" href="experiment2/age_geometry_3d.html">
+      <div class="icon">👴</div>
+      <div class="card-body">
+        <div class="card-title">Age (10–80yr) — 3D Arc</div>
+        <div class="card-desc">8 ages · natural spline · PC1/PC2 ratio 2.3 · linear ✓</div>
+        <span class="tag tag-arc">Linear · arc</span>
+      </div>
+    </a>
+    <a class="card" href="experiment2/age_geometry_2d_unbiased.html">
+      <div class="icon">🔍</div>
+      <div class="card-body">
+        <div class="card-title">Age — Unbiased 2D</div>
+        <div class="card-desc">Centroid-only 2D PCA · young→old gradient visible</div>
+        <span class="tag tag-valid">Validation</span>
+      </div>
+    </a>
+  </div>
+
+</body>
+</html>

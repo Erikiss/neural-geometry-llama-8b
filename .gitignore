@@ -1,4 +1,6 @@
 .env
+app/backend/cache/cache.db
+app/backend/cache/*.db
 __pycache__/
 *.pyc
 .DS_Store

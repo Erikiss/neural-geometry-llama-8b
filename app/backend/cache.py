@@ -16,7 +16,7 @@ CACHE_DIR = Path(os.environ.get("CACHE_DIR", Path(__file__).parent / "cache"))
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 DB_PATH = CACHE_DIR / "cache.db"
 
-SIMILARITY_THRESHOLD = 0.88
+SIMILARITY_THRESHOLD = 0.97
 
 
 def _get_conn() -> sqlite3.Connection:

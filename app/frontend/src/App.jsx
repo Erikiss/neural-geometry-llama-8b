@@ -33,6 +33,7 @@ export default function App() {
       const reader = res.body.getReader()
       const decoder = new TextDecoder()
       let buffer = ''
+      let finished = false
 
       while (true) {
         const { done, value } = await reader.read()
@@ -57,13 +58,20 @@ export default function App() {
             setResult(parsed)
             setLoading(false)
             setProgress(null)
+            finished = true
           }
           if (parsed.message && parsed.pct === undefined && !parsed.concept_name) {
             setError(parsed.message)
             setLoading(false)
             setProgress(null)
+            finished = true
           }
         }
+      }
+
+      if (!finished) {
+        const hint = API_BASE ? '' : ' (VITE_API_URL may not be set)'
+        throw new Error(`Stream ended without a result${hint}`)
       }
     } catch (e) {
       setError(e.message)

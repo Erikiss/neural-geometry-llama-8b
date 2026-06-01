@@ -1,0 +1,82 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/backend/**'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate environment configuration
+        run: |
+          echo "Validating backend environment configuration..."
+          cd app/backend
+          if ! grep -q "OPENAI_API_KEY" .env.example; then
+            echo "ERROR: OPENAI_API_KEY not found in .env.example"
+            exit 1
+          fi
+          echo "✓ Environment configuration is valid"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd app/backend
+          pip install --no-cache-dir torch==2.3.1+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+
+      - name: Lint Python code (basic)
+        run: |
+          cd app/backend
+          python -m py_compile *.py
+          echo "✓ Python syntax validation passed"
+
+      - name: Verify required environment variables
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          NDIF_API_KEY: ${{ secrets.NDIF_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "ERROR: OPENAI_API_KEY secret is not set in GitHub"
+            exit 1
+          fi
+          echo "✓ Required secrets are configured"
+
+      - name: Build Docker image (test)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          cd app/backend
+          docker build --no-cache -t neural-geometry-backend:test .
+          echo "✓ Docker image built successfully"
+
+      # Add deployment step for your chosen platform here
+      # Examples:
+      # - Railway: push to Railway registry
+      # - Render: trigger deploy via API
+      # - Heroku: push to Heroku container registry
+      # - Cloud Run: push to Google Cloud Artifact Registry
+
+      - name: Deployment placeholder
+        run: |
+          echo "Backend deployment configuration ready."
+          echo "To deploy, configure the appropriate deployment step in this workflow for your platform:"
+          echo "  - Railway: https://docs.railway.app/guides/github-integration"
+          echo "  - Render: https://render.com/docs/deploy-from-github"
+          echo "  - Google Cloud Run: https://cloud.google.com/run/docs/quickstarts/build-and-deploy"
